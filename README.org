@@ -1,49 +1,77 @@
 This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile api. Please read the [[https://tureng.com/en/termsofuse][terms and conditions]] of the tureng before the use this package on any production.
 
 * Useage
-~Tureng.translate(word:str)~ method returns a ~TranslatedResult~ object. It has meta data like ~is_turkish~ or ~is_found~ and the translated words on ~grouped_results~ or ~common_useages~. If the translation can't found it will suggest list of string on ~suggestions~.
+~Tureng.translate(word:str)~ method returns a ~TranslatedResult~ object. It has meta data like ~is_found~ and the translated words like ~grouped_results~. If the translation can't found it will suggest list of string on ~suggestions~. You can get best translation results with ~TranslatedResult.best_tr_translation~
 
-~grouped_results~ is a dictinoary. Keys are group name of the translation (like 'Common Usage' or "Computer Engineering Term"..) and the values are list of TurEngWord. 
+~grouped_results~ is a list of ~TurEngGroup~ class. You can search groups with ~group_search(patern, attribution="name_en")~ or you can get tr2en translatition groups with ~tr2en_groups~. 
 
-~TurEngWord~ is just a class that store the translation strings and group_name (like is it 'Common Usage' translation or 'Medical Term' translation).
+Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngWord class is just a class that store the translation string some meta data.
 
 Example useage:
 #+BEGIN_SRC python
-  from tureng import TurEng
-
-  tureng = TurEng()
-
-  yes = tureng.translate("yes")
-
-  yes.most_common_translation # 'evet'
-  yes.has_error               # False
-  yes.is_found                # True
-  yes.is_english              # True
-  yes.is_turkish              # False
-  yes.searched_term           # 'yes'
-  yes.grouped_results         # {'group_name': [TurEngWord, TurEngWord....], .............}
-  yes.suggestions             # None
-  yes.common_useages          # [TurEngWord, TurenWord, .....]
-
-  # TurEngWord class
-  word_evet = yes.common_useages[0] # most most_common_translation, we could 
-                                     # write t_yes.most_common_translation
-
-  word_evet.tr                                             # 'evet'
-  word_evet.eng                                            # 'yes'
-  word_evet.group_eng                                      # 'Common Usage (en->tr)'
-  t_yes.common_useages[0] == t_yes.most_common_translation # True
+  >>> from tureng import TurEng
+  >>> tureng = TurEng()
+  >>> yes_results = tureng.translate("yes")
+  >>> yes_results.best_tr_translation
+  yes -> evet
+  >>> yes_results.best_tr_translation.tr
+  evet
+  >>> yes_results.best_tr_translation.type_en
+  'n.'  # noun
+  >>> yes_results.tr2en_groups
+  []
+  >>> yes_results.en2tr_groups
+  [(en->tr) Yaygın Kullanım-Common Usage Group [1 word], (en->tr) Genel-General Group [8 word]]
+  >>> yes_general_group = yes_results.en2tr_groups[1]
+  >>> yes_general_group.orj_lang
+  'en'
+  >>> yes_general_group.words
+  [yes -> olumlu cevap, yes -> olumlu oy, yes -> hatta, yes -> bile, yes -> ya, yes -> baş üstüne, yes -> tamam, yes -> evet]
+  >>> yes_general_group.words[0]
+  yes -> olumlu cevap
 
 
-  # Turkish search
-  t_evet = tureng.translate("evet")
-  t_evet.is_turkish      # True
+  >>> random_results2 = tureng.translate("yys")
+  >>> random_results2.is_found
+  0
+  >>> random_results2.suggestions
+  ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
+  >>> random_results2.has_error
+  False
 
 
-  # None found search
-  t_yys = tureng.translate("yys")
-  t_yys.is_found      # False
-  t_yys.suggestions  # ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
+  >>> yoyo_results = tureng.translate("yoyo")
+  >>> yoyo_results.tr2en_groups
+  [(tr->en) Genel-General Group [2 word]]
+  >>> yoyo_results.en2tr_groups
+  [(en->tr) Genel-General Group [3 word]]
+  >>> yoyo_results.group_search(".*eneral.*")
+  [(tr->en) Genel-General Group [2 word], (en->tr) Genel-General Group [3 word]]
+  >>> yoyo_results.group_search("tr", "trans_lang")
+  [(en->tr) Genel-General Group [3 word]]
+
+
+  >>> car_results = tureng.translate("car")
+  >>> car_results.best_tr_translation
+  car -> otomobil
+  >>> car_results.grouped_results
+  [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], (en->tr) Yaygın Kullanım-Common Usage Group [2 word], (en->tr) Genel-General Group [10 word], (en->tr) Teknik-Technical Group [1 word], (en->tr) Otomotiv-Automotive Group [3 word], (en->tr) Demiryolu-Railway Group [4 word], (en->tr) Havacılık-Aeronautic Group [3 word]]
+  >>> car_results.group_search(".*ilgisayar.*", "name_tr")
+  [(tr->en) Bilgisayar-Computer Group [1 word]]
+
+  >>> car_bilgisayar_group = car_results.group_search(".*ilgisayar.*", "name_tr")[0]
+  >>> car_bilgisayar_group.name_tr
+  'Bilgisayar'
+  >>> car_bilgisayar_group.orj_lang
+  'tr'
+
+  >>> car_bilg_word = car_bilgisayar_group.words[0]
+  >>> car_bilg_word.tr
+  'car'
+  >>> car_bilg_word.en
+  'wed'
+  >>> car_bilg_word
+  car -> wed
 #+END_SRC
 
 * Tests

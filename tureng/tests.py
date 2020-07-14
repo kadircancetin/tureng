@@ -11,38 +11,40 @@ class TestSum(unittest.TestCase):
 
         self.assertFalse(trans.has_error, "Should find the 'yes'")
         self.assertTrue(trans.is_found, "If don't find 'yes', there should be problem")
-        self.assertFalse(trans.is_turkish, "Yes is english word.")
-        self.assertTrue(trans.is_english, "Yes is english word.")
-        self.assertEqual(trans.searched_term, "yes", "Yes is yes. Yes :D")
-        self.assertIsNone(trans.suggestions, "Don't suggest for yes")
-        self.assertEqual(trans.most_common_translation, "evet", "Most common use of yes is evet")
-
-        self.assertEqual(trans.common_useages[0].tr, "evet", "Yes = evet.")
-        self.assertEqual(trans.common_useages[0].eng, "yes", "Yes = evet.")
-        self.assertEqual(trans.common_useages[0].type_eng, "n.", "Yes is noun")
-        self.assertEqual(trans.common_useages[0].type_tr, "i.", "Evet is isim")
-
-        self.assertIsNotNone(trans.grouped_results, "Should find yes")
+        self.assertEqual(trans.searched_term, "yes", "Yes is yes :D")
         self.assertIsNone(trans.suggestions, "Don't suggest for yes")
 
-    def test_evet(self):
-        trans = self.tureng.translate("evet")
+        self.assertEqual(trans.best_tr_translation.tr, "evet")
+        self.assertEqual(trans.best_tr_translation.en, "yes")
 
-        self.assertFalse(trans.has_error, "Should find the 'evet'")
-        self.assertTrue(trans.is_found, "If don't find 'evet', there should be problem")
-        self.assertTrue(trans.is_turkish, "Evet is turkish word.")
-        self.assertFalse(trans.is_english, "Yes is turkish word.")
-        self.assertEqual(trans.searched_term, "evet", "Yes is yes. Yes :D")
-        self.assertIsNone(trans.suggestions, "Don't suggest for yes")
-        self.assertEqual(trans.most_common_translation, "yes", "Most common use of yes is evet")
+        self.assertLess(0, len(trans.en2tr_groups))
+        self.assertEqual(len(trans.tr2en_groups), 0)
 
-        self.assertEqual(trans.common_useages[0].tr, "evet", "Yes = evet.")
-        self.assertEqual(trans.common_useages[0].eng, "yes", "Yes = evet.")
-        self.assertEqual(trans.common_useages[0].type_eng, "n.", "Yes is noun")
-        self.assertEqual(trans.common_useages[0].type_tr, "i.", "Evet is isim")
+    def test_suggest(self):
+        trans = self.tureng.translate("yys")
+        self.assertFalse(trans.is_found)
+        self.assertTrue("yes" in trans.suggestions)
 
-        self.assertIsNotNone(trans.grouped_results, "Shuld find yes")
-        self.assertIsNone(trans.suggestions, "Don't suggest for yes")
+    def test_smoke_test(self):
+        words = ["evet", "quadrile", "yes", "yys", "şflkjsadşflkjşsaldkfjaşsldkfjşsaldjfşlaskdjf"]
+
+        for word in words:
+            tmp = self.tureng.translate(word)
+            tmp.best_tr_translation
+            tmp.best_en_translation
+            tmp.tr2en_groups
+            tmp.en2tr_groups
+            tmp.best_en2tr_group
+            tmp.best_tr2en_group
+
+        tmp = self.tureng.translate("evet")
+        first_word = tmp.best_tr_translation
+
+        for i in tmp.grouped_results:
+            i.add_word(first_word)
+
+        second_group = tmp.grouped_results[1]
+        self.assertEqual(second_group.words[0].tr, "evet")
 
 
 if __name__ == "__main__":

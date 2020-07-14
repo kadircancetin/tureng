@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 
@@ -18,55 +19,135 @@ class TranslatedResult:
     def __init__(self, resp_dic):
         self.has_error = not resp_dic["IsSuccessful"]
         self.is_found = resp_dic["MobileResult"]["IsFound"]
-        self.is_english = resp_dic["MobileResult"]["IsTRToEN"]
-        self.is_turkish = not self.is_english
         self.searched_term = resp_dic["MobileResult"]["Term"]
 
         self.grouped_results = None
-        self.common_useages = None
-        self.most_common_translation = None
         self.suggestions = None
 
         if self.is_found:
             self.grouped_results = self.__get_group_results(resp_dic)
-            self.common_useages = [
-                self.grouped_results[typ]
-                for typ, lst in self.grouped_results.items()
-                if "Common Usage" in typ
-            ][0]
-            self.most_common_translation = self.common_useages[0].translated
         else:
             self.suggestions = resp_dic["MobileResult"]["Suggestions"]
 
+    def group_search(self, patern, attribution="name_en"):
+        return [x for x in self.grouped_results if re.match(patern, getattr(x, attribution))]
+
+    @property
+    def best_tr_translation(self):
+        if self.best_en2tr_group:
+            return self.best_en2tr_group.words[0]
+        return None
+
+    @property
+    def best_en_translation(self):
+        if self.best_tr2en_group:
+            return self.best_tr2en_group.words[0]
+        return None
+
+    @property
+    def tr2en_groups(self):
+        if not self.is_found:
+            return []
+        return [x for x in self.grouped_results if x.orj_lang == "tr"]
+
+    @property
+    def en2tr_groups(self):
+        if not self.is_found:
+            return []
+        return [x for x in self.grouped_results if x.orj_lang == "en"]
+
+    @property
+    def best_en2tr_group(self):
+        if not self.is_found:
+            return None
+
+        for i in self.grouped_results:
+            if i.orj_lang == "en":
+                return i
+        return None
+
+    @property
+    def best_tr2en_group(self):
+        if not self.is_found:
+            return None
+
+        for i in self.grouped_results:
+            if i.orj_lang == "tr":
+                return i
+        return None
+
     def __get_group_results(self, resp_dic):
         results = resp_dic["MobileResult"]["Results"]
-        categories = dict()
+        categories_str = dict()
 
         for result in results:
-            if result["CategoryEN"] in categories:
-                categories[result["CategoryEN"]].append(
+            c_name = "{}--{}--{}".format(
+                result["CategoryEN"][:-9],
+                result["CategoryTR"][:-9],
+                result["CategoryTR"][-7:-5]
+            )
+
+            if c_name in categories_str:
+                categories_str[c_name].append(
                     TurEngWord(result, self.searched_term)
                 )
             else:
-                categories[result["CategoryEN"]] = [
+                categories_str[c_name] = [
                     TurEngWord(result, self.searched_term)
                 ]
+
+        categories = []
+        for category, words in categories_str.items():
+            name_en, name_tr, orj_lang = category.split("--")
+            group = TurEngGroup(orj_lang=orj_lang, name_en=name_en, name_tr=name_tr)
+
+            categories.append(group)
+            for word in words:
+                group.add_word(word)
+
         return categories
+
+
+class TurEngGroup:
+    def __init__(self, orj_lang, name_en, name_tr):
+        self.name_tr = name_tr
+        self.name_en = name_en
+        self.orj_lang = orj_lang
+        self.trans_lang = "en"
+        if self.orj_lang == "en":
+            self.trans_lang = "tr"
+        self.words = []
+
+    def add_word(self, word):
+        self.words.append(word)
+
+    def __repr__(self):
+        return "({}->{}) {}-{} Group [{} word]".format(
+            self.orj_lang, self.trans_lang, self.name_tr, self.name_en, len(self.words)
+        )
 
 
 class TurEngWord:
     def __init__(self, word_dic, searched_term):
-        self.group_eng = word_dic["CategoryEN"]
+        self.group_en = word_dic["CategoryEN"]
         self.group_tr = word_dic["CategoryTR"]
-        self.type_eng = word_dic["TypeEN"]
+        self.type_en = word_dic["TypeEN"]
         self.type_tr = word_dic["TypeTR"]
-        self.eng = searched_term
+        self.en = searched_term
         self.tr = word_dic["Term"]
-        self.translated = self.tr
+        self.orj_lang = self.en
 
         if "(tr->en)" in word_dic["CategoryEN"]:
-            self.tr, self.eng = self.eng, self.tr
-            self.translated = self.eng
+            self.tr, self.en = self.en, self.tr
+            self.orj_lang = self.tr
 
     def __repr__(self):
-        return f"({self.tr} -> {self.eng})"
+        if self.orj_lang == self.tr:
+            return self.tr + " -> " + self.en
+        return self.en + " -> " + self.tr
+
+
+if __name__ == "__main__":
+    tureng = TurEng()
+    s = tureng.translate("evet")
+    print(s.best_en_translation)
