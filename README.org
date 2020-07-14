@@ -8,7 +8,7 @@ This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile ap
 Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngWord class is just a class that store the translation string some meta data.
 
 Example useage:
-#+BEGIN_SRC 
+#+BEGIN_SRC python
   >>> from tureng import TurEng
   >>> tureng = TurEng()
 
