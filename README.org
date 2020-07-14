@@ -9,60 +9,60 @@ Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngW
 
 Example useage:
 #+BEGIN_SRC python
-  >>> from tureng import TurEng
-  >>> tureng = TurEng()
+  from tureng import TurEng
+  tureng = TurEng()
 
 
-  >>> rslt = tureng.translate("yes")
-  >>> rslt.best_tr_translation
-  yes -> evet
-  >>> rslt.best_tr_translation.tr
-  evet
-  >>> rslt.best_tr_translation.type_en
-  'n.'  # noun
-  >>> rslt.tr2en_groups
-  []
-  >>> rslt.en2tr_groups
+  r = tureng.translate("yes")
+  r.best_tr_translation
+  # yes -> evet
+  r.best_tr_translation.tr
+  # evet
+  r.best_tr_translation.type_en
+  # 'n.'  # noun
+  r.tr2en_groups
+  # []
+  r.en2tr_groups
   # [(en->tr) Yaygın Kullanım-Common Usage Group [1 word], (en->tr) Genel-General Group [8 word]]
-  >>> yes_general_group = rslt.en2tr_groups[1]
-  >>> yes_general_group.orj_lang
-  'en'
-  >>> yes_general_group.words
-  [yes -> olumlu cevap, yes -> olumlu oy, yes -> hatta, yes -> bile, yes -> ya, yes -> baş üstüne, yes -> tamam, yes -> evet]
-  >>> yes_general_group.words[0]
-  yes -> olumlu cevap
+  yes_general_group = r.en2tr_groups[1]
+  yes_general_group.orj_lang
+  # 'en'
+  yes_general_group.words
+  # [yes -> olumlu cevap, yes -> olumlu oy, yes -> hatta, yes -> bile, yes -> ya, yes -> baş üstüne, yes -> tamam, yes -> evet]
+  yes_general_group.words[0]
+  # yes -> olumlu cevap
 
 
-  >>> r = tureng.translate("yys") # random translation result for suggestion
-  >>> r.is_found
-  0
-  >>> r.suggestions
-  ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
-  >>> r.has_error
-  False
+  r = tureng.translate("yys") # random translation result for suggestion
+  r.is_found
+  # 0
+  r.suggestions
+  # ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
+  r.has_error
+  # False
 
 
-  >>> r = tureng.translate("car")  # car_result
-  >>> r.best_tr_translation
-  car -> otomobil
-  >>> r.grouped_results
+  r = tureng.translate("car")  # car_result
+  r.best_tr_translation
+  # car -> otomobil
+  r.grouped_results
   # [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], .........]
-  >>> r.group_search(".*ilgisayar.*", "name_tr")
+  r.group_search(".*ilgisayar.*", "name_tr")
   # [(tr->en) Bilgisayar-Computer Group [1 word]]
 
-  >>> car_bilgisayar_group = r.group_search(".*ilgisayar.*", "name_tr")[0]
-  >>> car_bilgisayar_group.name_tr
-  'Bilgisayar'
-  >>> car_bilgisayar_group.orj_lang
-  'tr'
+  car_bilgisayar_group = r.group_search(".*ilgisayar.*", "name_tr")[0]
+  car_bilgisayar_group.name_tr
+  # 'Bilgisayar'
+  car_bilgisayar_group.orj_lang
+  # 'tr'
 
-  >>> car_bilg_word = car_bilgisayar_group.words[0]
-  >>> car_bilg_word.tr
-  'car'
-  >>> car_bilg_word.en
-  'wed'
-  >>> car_bilg_word
-  car -> wed
+  car_bilg_word = car_bilgisayar_group.words[0]
+  car_bilg_word.tr
+  # 'car'
+  car_bilg_word.en
+  # 'wed'
+  car_bilg_word
+  # car -> wed
 #+END_SRC
 
 * Tests
