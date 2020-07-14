@@ -1,45 +1,49 @@
 This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile api. Please read the [[https://tureng.com/en/termsofuse][terms and conditions]] of the tureng before the use this package on any production.
 
 * Useage
-Example useage
+~Tureng.translate(word:str)~ method returns a ~TranslatedResult~ object. It has meta data like ~is_turkish~ or ~is_found~ and the translated words on ~grouped_results~ or ~common_useages~. If the translation can't found it will suggest list of string on ~suggestions~.
+
+~grouped_results~ is a dictinoary. Keys are group name of the translation (like 'Common Usage' or "Computer Engineering Term"..) and the values are list of TurEngWord. 
+
+~TurEngWord~ is just a class that store the translation strings and group_name (like is it 'Common Usage' translation or 'Medical Term' translation).
+
+Example useage:
 #+BEGIN_SRC python
   from tureng import TurEng
 
   tureng = TurEng()
 
-  t_yes = tureng.translate("yes")
-  print(t_yes.most_common_translation) # 'evet'
-  print(t_yes.has_error)               # False
-  print(t_yes.is_found)                # True
-  print(t_yes.is_english)              # True
-  print(t_yes.is_turkish)              # False
-  print(t_yes.searched_term)           # 'yes'
-  print(t_yes.grouped_results)    # {'group_name': [TurEngWord, TurEngWord....], .............}
-  print(t_yes.suggestions)             # None
-  print(t_yes.common_useages)          # [TurEngWord, TurenWord, .....]
+  yes = tureng.translate("yes")
+
+  yes.most_common_translation # 'evet'
+  yes.has_error               # False
+  yes.is_found                # True
+  yes.is_english              # True
+  yes.is_turkish              # False
+  yes.searched_term           # 'yes'
+  yes.grouped_results         # {'group_name': [TurEngWord, TurEngWord....], .............}
+  yes.suggestions             # None
+  yes.common_useages          # [TurEngWord, TurenWord, .....]
 
   # TurEngWord class
-  word_yes = t_yes.common_useages[0] # most most_common_translation, we could 
+  word_evet = yes.common_useages[0] # most most_common_translation, we could 
                                      # write t_yes.most_common_translation
 
-  print(word_yes.tr)                 # evet
-  print(word_yes.eng)                # yes
-  print(word_yes.group_eng)          # 'Common Usage (en->tr)'
-  print(
-      t_yes.common_useages[0] == t_yes.most_common_translation
-  ) # True
+  word_evet.tr                                             # 'evet'
+  word_evet.eng                                            # 'yes'
+  word_evet.group_eng                                      # 'Common Usage (en->tr)'
+  t_yes.common_useages[0] == t_yes.most_common_translation # True
 
 
   # Turkish search
   t_evet = tureng.translate("evet")
-  print(t_evet.is_turkish)      # True
+  t_evet.is_turkish      # True
 
 
   # None found search
   t_yys = tureng.translate("yys")
-  print(t_yes.is_found)        # False
-  print(t_evet.suggestions)    
-  # ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
+  t_yys.is_found      # False
+  t_yys.suggestions  # ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
 #+END_SRC
 
 * Tests
