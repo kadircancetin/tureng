@@ -33,6 +33,20 @@ class TranslatedResult:
         return [x for x in self.grouped_results if re.match(patern, getattr(x, attribution))]
 
     @property
+    def all_tr_translation_str(self):
+        words = []
+        for group in self.en2tr_groups:
+            words.extend([x.tr for x in group.words])
+        return words
+
+    @property
+    def all_en_translation_str(self):
+        words = []
+        for group in self.tr2en_groups:
+            words.extend([x.en for x in group.words])
+        return words
+
+    @property
     def best_tr_translation(self):
         if self.best_en2tr_group:
             return self.best_en2tr_group.words[0]

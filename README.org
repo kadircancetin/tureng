@@ -14,6 +14,8 @@ Example useage:
 
 
   r = tureng.translate("yes")
+  t.all_tr_translation_str
+  # ['evet', 'olumlu cevap', 'olumlu oy', 'hatta', 'bile', 'ya', 'baş üstüne', 'tamam', 'evet']
   r.best_tr_translation
   # yes -> evet
   r.best_tr_translation.tr
@@ -43,6 +45,8 @@ Example useage:
 
 
   r = tureng.translate("car")  # car_result
+  t.all_tr_translation_str
+  # ['otomobil', 'araba', 'kabin', 'araba', 'makine', 'vagon', 'yolcu taşıyan herhangi bir aracın bölmesi', 'oto', 'araç', 'vagonet', "ingiltere'de tekerlekli, motorlu veya motorsuz kara taşıma aracı", 'balık ve ıstakoz saklanan kutu', 'vagon', 'otomobil', 'binek otomobil', 'araba', 'yük ve yolcu taşıyan demiryolu arabası', 'yolcu vagonu', 'yük vagonu', 'vagon', 'karoser', 'hava gemisi yolcu bölmesi', 'bölme']
   r.best_tr_translation
   # car -> otomobil
   r.grouped_results

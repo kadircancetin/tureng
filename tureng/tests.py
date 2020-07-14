@@ -17,8 +17,26 @@ class TestSum(unittest.TestCase):
         self.assertEqual(trans.best_tr_translation.tr, "evet")
         self.assertEqual(trans.best_tr_translation.en, "yes")
 
+        self.assertTrue("evet" in trans.all_tr_translation_str)
+
         self.assertLess(0, len(trans.en2tr_groups))
         self.assertEqual(len(trans.tr2en_groups), 0)
+
+    def test_evet(self):
+        trans = self.tureng.translate("evet")
+
+        self.assertFalse(trans.has_error)
+        self.assertTrue(trans.is_found)
+        self.assertEqual(trans.searched_term, "evet")
+        self.assertIsNone(trans.suggestions)
+
+        self.assertEqual(trans.best_en_translation.tr, "evet")
+        self.assertEqual(trans.best_en_translation.en, "yes")
+
+        self.assertTrue("yes" in trans.all_en_translation_str)
+
+        self.assertLess(0, len(trans.tr2en_groups))
+        self.assertEqual(len(trans.en2tr_groups), 0)
 
     def test_suggest(self):
         trans = self.tureng.translate("yys")
@@ -36,6 +54,8 @@ class TestSum(unittest.TestCase):
             tmp.en2tr_groups
             tmp.best_en2tr_group
             tmp.best_tr2en_group
+            tmp.all_en_translation_str
+            tmp.all_tr_translation_str
 
         tmp = self.tureng.translate("evet")
         first_word = tmp.best_tr_translation
