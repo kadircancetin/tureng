@@ -1,16 +1,16 @@
 This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile api. Please read the [[https://tureng.com/en/termsofuse][terms and conditions]] of the tureng before the use this package on any production.
 
-* Useage
+* Usage
 ~Tureng.translate(word:str)~ method returns a ~TranslatedResult~ object. It has meta data like ~is_found~ and the translated words like ~grouped_results~. If the translation can't found it will suggest list of string on ~suggestions~. You can get best translation results with ~TranslatedResult.best_tr_translation~
 
 ~grouped_results~ is a list of ~TurEngGroup~ class. You can search groups with ~group_search(patern, attribution="name_en")~ or you can get tr2en translatition groups with ~tr2en_groups~. 
 
-Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngWord class is just a class that store the translation string some meta data.
+Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngWord class is just a class that store the translation string's some meta data.
 
 Generaly:
 ~TurEngWord~ n --> 1 ~TurEngGroup~ n --> 1 ~TranslatedResult~
 
-Example useage:
+Example usage:
 #+BEGIN_SRC python
   from tureng import TurEng
   tureng = TurEng()
