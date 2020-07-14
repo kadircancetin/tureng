@@ -1,5 +1,10 @@
 This package is a very basic, python 3 [[https://tureng.com]] wrapper of thier mobile api. Please read the [[https://tureng.com/en/termsofuse][terms and conditions]] of the tureng before the use this package on any production.
 
+* Installation
+#+BEGIN_SRC 
+pip install tureng  
+#+END_SRC
+
 * Usage
 ~Tureng.translate(word:str)~ method returns a ~TranslatedResult~ object. It has meta data like ~is_found~ and the translated words like ~grouped_results~. If the translation can't found it will suggest list of string on ~suggestions~. You can get best translation results with ~TranslatedResult.best_tr_translation~
 
