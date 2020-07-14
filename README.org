@@ -8,21 +8,23 @@ This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile ap
 Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngWord class is just a class that store the translation string some meta data.
 
 Example useage:
-#+BEGIN_SRC python
+#+BEGIN_SRC 
   >>> from tureng import TurEng
   >>> tureng = TurEng()
-  >>> yes_results = tureng.translate("yes")
-  >>> yes_results.best_tr_translation
+
+
+  >>> rslt = tureng.translate("yes")
+  >>> rslt.best_tr_translation
   yes -> evet
-  >>> yes_results.best_tr_translation.tr
+  >>> rslt.best_tr_translation.tr
   evet
-  >>> yes_results.best_tr_translation.type_en
+  >>> rslt.best_tr_translation.type_en
   'n.'  # noun
-  >>> yes_results.tr2en_groups
+  >>> rslt.tr2en_groups
   []
-  >>> yes_results.en2tr_groups
+  >>> rslt.en2tr_groups
   [(en->tr) Yaygın Kullanım-Common Usage Group [1 word], (en->tr) Genel-General Group [8 word]]
-  >>> yes_general_group = yes_results.en2tr_groups[1]
+  >>> yes_general_group = rslt.en2tr_groups[1]
   >>> yes_general_group.orj_lang
   'en'
   >>> yes_general_group.words
@@ -31,35 +33,24 @@ Example useage:
   yes -> olumlu cevap
 
 
-  >>> random_results2 = tureng.translate("yys")
-  >>> random_results2.is_found
+  >>> r = tureng.translate("yys") # random translation result for suggestion
+  >>> r.is_found
   0
-  >>> random_results2.suggestions
+  >>> r.suggestions
   ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
-  >>> random_results2.has_error
+  >>> r.has_error
   False
 
 
-  >>> yoyo_results = tureng.translate("yoyo")
-  >>> yoyo_results.tr2en_groups
-  [(tr->en) Genel-General Group [2 word]]
-  >>> yoyo_results.en2tr_groups
-  [(en->tr) Genel-General Group [3 word]]
-  >>> yoyo_results.group_search(".*eneral.*")
-  [(tr->en) Genel-General Group [2 word], (en->tr) Genel-General Group [3 word]]
-  >>> yoyo_results.group_search("tr", "trans_lang")
-  [(en->tr) Genel-General Group [3 word]]
-
-
-  >>> car_results = tureng.translate("car")
-  >>> car_results.best_tr_translation
+  >>> r = tureng.translate("car")  # car_result
+  >>> r.best_tr_translation
   car -> otomobil
-  >>> car_results.grouped_results
-  [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], (en->tr) Yaygın Kullanım-Common Usage Group [2 word], (en->tr) Genel-General Group [10 word], (en->tr) Teknik-Technical Group [1 word], (en->tr) Otomotiv-Automotive Group [3 word], (en->tr) Demiryolu-Railway Group [4 word], (en->tr) Havacılık-Aeronautic Group [3 word]]
-  >>> car_results.group_search(".*ilgisayar.*", "name_tr")
+  >>> r.grouped_results
+  [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], .........]
+  >>> r.group_search(".*ilgisayar.*", "name_tr")
   [(tr->en) Bilgisayar-Computer Group [1 word]]
 
-  >>> car_bilgisayar_group = car_results.group_search(".*ilgisayar.*", "name_tr")[0]
+  >>> car_bilgisayar_group = r.group_search(".*ilgisayar.*", "name_tr")[0]
   >>> car_bilgisayar_group.name_tr
   'Bilgisayar'
   >>> car_bilgisayar_group.orj_lang
