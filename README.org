@@ -7,26 +7,29 @@ This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile ap
 
 Any group has ~.words~ attribute that is a list of ~TurEngWord~ objects. TurEngWord class is just a class that store the translation string some meta data.
 
+Generaly:
+~TurEngWord~ n --> 1 ~TurEngGroup~ n --> 1 ~TranslatedResult~
+
 Example useage:
 #+BEGIN_SRC python
   from tureng import TurEng
   tureng = TurEng()
 
 
-  r = tureng.translate("yes")
-  t.all_tr_translation_str
+  yes_result = tureng.translate("yes")
+  yes_result.all_tr_translation_str
   # ['evet', 'olumlu cevap', 'olumlu oy', 'hatta', 'bile', 'ya', 'baş üstüne', 'tamam', 'evet']
-  r.best_tr_translation
+  yes_result.best_tr_translation
   # yes -> evet
-  r.best_tr_translation.tr
+  yes_result.best_tr_translation.tr
   # evet
-  r.best_tr_translation.type_en
+  yes_result.best_tr_translation.type_en
   # 'n.'  # noun
-  r.tr2en_groups
+  yes_result.tr2en_groups
   # []
-  r.en2tr_groups
+  yes_result.en2tr_groups
   # [(en->tr) Yaygın Kullanım-Common Usage Group [1 word], (en->tr) Genel-General Group [8 word]]
-  yes_general_group = r.en2tr_groups[1]
+  yes_general_group = yes_result.en2tr_groups[1]
   yes_general_group.orj_lang
   # 'en'
   yes_general_group.words
@@ -35,26 +38,26 @@ Example useage:
   # yes -> olumlu cevap
 
 
-  r = tureng.translate("yys") # random translation result for suggestion
-  r.is_found
+  yys_result = tureng.translate("yys") # random translation result for suggestion
+  yys_result.is_found
   # 0
-  r.suggestions
+  yys_result.suggestions
   # ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
-  r.has_error
+  yys_result.has_error
   # False
 
 
-  r = tureng.translate("car")  # car_result
-  t.all_tr_translation_str
+  car_result = tureng.translate("car")  # car_result
+  car_result.all_tr_translation_str
   # ['otomobil', 'araba', 'kabin', 'araba', 'makine', 'vagon', 'yolcu taşıyan herhangi bir aracın bölmesi', 'oto', 'araç', 'vagonet', "ingiltere'de tekerlekli, motorlu veya motorsuz kara taşıma aracı", 'balık ve ıstakoz saklanan kutu', 'vagon', 'otomobil', 'binek otomobil', 'araba', 'yük ve yolcu taşıyan demiryolu arabası', 'yolcu vagonu', 'yük vagonu', 'vagon', 'karoser', 'hava gemisi yolcu bölmesi', 'bölme']
-  r.best_tr_translation
+  car_result.best_tr_translation
   # car -> otomobil
-  r.grouped_results
+  car_result.grouped_results
   # [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], .........]
-  r.group_search(".*ilgisayar.*", "name_tr")
+  car_result.group_search(".*ilgisayar.*", "name_tr")
   # [(tr->en) Bilgisayar-Computer Group [1 word]]
 
-  car_bilgisayar_group = r.group_search(".*ilgisayar.*", "name_tr")[0]
+  car_bilgisayar_group = car_result.group_search(".*ilgisayar.*", "name_tr")[0]
   car_bilgisayar_group.name_tr
   # 'Bilgisayar'
   car_bilgisayar_group.orj_lang
