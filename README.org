@@ -23,7 +23,7 @@ Example useage:
   >>> rslt.tr2en_groups
   []
   >>> rslt.en2tr_groups
-  [(en->tr) Yaygın Kullanım-Common Usage Group [1 word], (en->tr) Genel-General Group [8 word]]
+  # [(en->tr) Yaygın Kullanım-Common Usage Group [1 word], (en->tr) Genel-General Group [8 word]]
   >>> yes_general_group = rslt.en2tr_groups[1]
   >>> yes_general_group.orj_lang
   'en'
@@ -46,9 +46,9 @@ Example useage:
   >>> r.best_tr_translation
   car -> otomobil
   >>> r.grouped_results
-  [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], .........]
+  # [(tr->en) Genel-General Group [3 word], (tr->en) Teknik-Technical Group [1 word], (tr->en) Bilgisayar-Computer Group [1 word], (tr->en) Tarih-History Group [1 word], .........]
   >>> r.group_search(".*ilgisayar.*", "name_tr")
-  [(tr->en) Bilgisayar-Computer Group [1 word]]
+  # [(tr->en) Bilgisayar-Computer Group [1 word]]
 
   >>> car_bilgisayar_group = r.group_search(".*ilgisayar.*", "name_tr")[0]
   >>> car_bilgisayar_group.name_tr
