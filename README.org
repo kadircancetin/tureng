@@ -1,0 +1,54 @@
+This package is a very basic, python 3 [[tureng.com]] wrapper of thier mobile api. Please read the [[https://tureng.com/en/termsofuse][terms and conditions]] of the tureng before the use this package on any production.
+
+* Useage
+Example useage
+#+BEGIN_SRC python
+  from tureng import TurEng
+
+  tureng = TurEng()
+
+  t_yes = tureng.translate("yes")
+  print(t_yes.most_common_translation) # 'evet'
+  print(t_yes.has_error)               # False
+  print(t_yes.is_found)                # True
+  print(t_yes.is_english)              # True
+  print(t_yes.is_turkish)              # False
+  print(t_yes.searched_term)           # 'yes'
+  print(t_yes.grouped_results)    # {'group_name': [TurEngWord, TurEngWord....], .............}
+  print(t_yes.suggestions)             # None
+  print(t_yes.common_useages)          # [TurEngWord, TurenWord, .....]
+
+  # TurEngWord class
+  word_yes = t_yes.common_useages[0] # most most_common_translation, we could 
+                                     # write t_yes.most_common_translation
+
+  print(word_yes.tr)                 # evet
+  print(word_yes.eng)                # yes
+  print(word_yes.group_eng)          # 'Common Usage (en->tr)'
+  print(
+      t_yes.common_useages[0] == t_yes.most_common_translation
+  ) # True
+
+
+  # Turkish search
+  t_evet = tureng.translate("evet")
+  print(t_evet.is_turkish)      # True
+
+
+  # None found search
+  t_yys = tureng.translate("yys")
+  print(t_yes.is_found)        # False
+  print(t_evet.suggestions)    
+  # ['yrs', 'yas', 'yds', 'ygs', 'dys', 'yes', 'öys', 'days', 'brys', 'yoyo']
+#+END_SRC
+
+* Tests
+Please note that this package is an unofficial wrapper. So if the tureng API will change, the package will not work. Maybe you want to check is it run properley.
+
+#+BEGIN_SRC bash
+  python tureng/tests.py
+#+END_SRC
+
+
+* Thanks
+Thanks to [[https://github.com/yozel/tureng]] yozel for the his open-source code which inspires to write this. 
